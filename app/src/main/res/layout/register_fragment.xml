@@ -5,7 +5,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/loginPageBackgroundColor"
-            tools:context=".LoginFragment">
+            tools:context=".RegisterFragment">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -75,13 +75,19 @@
                 android:layout_height="wrap_content">
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/next_button"
+                    android:id="@+id/submit_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="@string/button_next"/>
+                    android:text="Submit"/>
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/cancel1_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
     </LinearLayout>
 </ScrollView>
