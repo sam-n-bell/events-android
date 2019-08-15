@@ -1,6 +1,7 @@
 package com.example.loginlogout
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import com.squareup.okhttp.MediaType
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import com.squareup.okhttp.RequestBody
 import kotlinx.android.synthetic.main.listing_fragment.view.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -34,6 +39,7 @@ class ListingFragment : Fragment() {
     private var userlist: ListView? = null
     private var userArrayList: ArrayList<String>? = null
     private var userModelArrayList: ArrayList<User_Model>? = null
+//    private var eventsModelArrayList: ArrayList<Events_Model>? = null
     private var customAdapter: CustomAdapter? = null
 
     override fun onCreateView(
@@ -46,18 +52,6 @@ class ListingFragment : Fragment() {
 //        userModelArrayList = getInfo(response)  // uncomment this and comment the next line if response is above
         response = loadJSONFromAssets(); // returns json string with array of json objects
 
-        //We could use the builtin ArrayAdapter if we were dealing with just strings
-        // like in the following 3 lines
-        /*
-        // Call getStrings to parse the JSON Array and return as an ArrayList of Strings
-        userArrayList = getStrings(response!!)
-        //ArrayAdapter takes 3 inputs: 1. the current context,
-        //        2. a layout file specifying what each row in the list should look like,
-        //        3. the data that will populate the list as arguments.
-        val adapter = ArrayAdapter(view.context, android.R.layout.simple_list_item_1, userArrayList!!)
-        // set the custom adapter for the userlist viewing
-        userlist!!.adapter =  adapter
-        */
 
         //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
         // Call getInfo to parse the JSON Array and return as a UserModel ArrayList
@@ -71,6 +65,25 @@ class ListingFragment : Fragment() {
             (activity as NavigationHost).navigateTo(LogoutFragment(), false) //no back  button functionality
         })
         return view;
+    }
+
+
+    private fun getMyEvents(): String {
+
+        val url = "https://flaskappmysql.appspot.com/my-events"
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbmlzdHJhdG9yIjoxLCJ1c2VyX2lkIjoxLCJuYW1lIjoic2FtIGJlbGwiLCJlbWFpbCI6InNhbS5iZWxsQHV0ZXhhcy5lZHUifQ.ymdk1CuwjEJQ5Z124cKaq7UYLMeg0rzI7cFPYmLcLZ8")
+            .build()
+        try {
+            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
+            val bodystr =  response.body().string() // this can be consumed only once
+            return bodystr
+        } catch (e: Exception){
+            println("Failed"+e.toString())
+            return "fail"
+        }
     }
 
 
@@ -111,18 +124,4 @@ class ListingFragment : Fragment() {
         return json
     }
 
-    fun getStrings(response: String): ArrayList<String> {
-        val userArrayList = ArrayList<String>()
-        try {
-            val dataArray = JSONArray(response)
-            for (i in 0 until dataArray.length()) {
-                val dataobj = dataArray.getJSONObject(i)
-                userArrayList.add(dataobj.toString())
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        return userArrayList
-    }
 }

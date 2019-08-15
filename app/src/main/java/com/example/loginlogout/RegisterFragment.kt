@@ -21,58 +21,14 @@ import com.google.gson.GsonBuilder
 /**
  * Fragment representing the login screen for Shrine.
  */
-class LoginFragment : Fragment() {
+class RegisterFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.login_fragment, container, false)
+        val view = inflater.inflate(R.layout.register_fragment, container, false)
         // Set an error if the password is less than 8 characters.
-        view.next_button.setOnClickListener({
-            var email = email_edit_text.text!!
-            var password = password_edit_text.text!!
 
-            if (email.length == 0 || email == null) {
-                email_text_input.error = "Please enter an email"
-            }
-            else if (password.length == 0 || password == null) {
-                password_text_input.error = "Please enter a password"
-            }
-            else {
-//                Thread.sleep(10000)
-                doAsync {
-                    println("calling authenticate")
-                    var response = authenticate(email, password)
-                    println("got data back" + response)
-                    (activity as NavigationHost).navigateTo(ListingFragment(), false) //no back  button functionality
-                    try {
-//                        val gson = GsonBuilder().create()
-//                        val token = gson.fromJson(response, auth::class.java)
-                    } catch (e: Exception) {
-                        println("error in the try" + e.toString())
-                    }
-                }
-            }
-
-        })
-
-        view.register_button.setOnClickListener({
-            (activity as NavigationHost).navigateTo(RegisterFragment(), false)
-        })
-
-        view.email_edit_text.setOnKeyListener({ _, _, _ ->
-            if (email_edit_text.text!!.length > 0) {
-                email_text_input.error = null
-            }
-            false
-        })
-
-        view.password_edit_text.setOnKeyListener({ _, _, _ ->
-            if (password_edit_text.text!!.length > 0) {
-                password_text_input.error = null
-            }
-            false
-        })
 
 
         return view
@@ -112,6 +68,3 @@ class LoginFragment : Fragment() {
 
 }
 
-class token(val token: String)
-class user(val user_id: String)
-class auth(val token: token, val user: user)

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), NavigationHost {
                 .add(R.id.container, LoginFragment())
                 .commit()
         }
+
     }
 
     /**
