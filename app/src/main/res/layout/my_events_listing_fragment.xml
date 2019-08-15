@@ -13,17 +13,17 @@
             android:layout_marginTop="10dp"
             android:textSize="20sp"
             android:textColor="#000"
-            android:text="JSON Data"/>
+            android:text="My Events"/>
 
     <ListView
             android:layout_width="match_parent"
             android:layout_height="491dp"
-            android:id="@+id/userlist"/>
+            android:id="@+id/eventlist"/>
     <com.google.android.material.button.MaterialButton
             android:id="@+id/back_button"
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="Back"/>
+            android:text="BACK"/>
 </LinearLayout>

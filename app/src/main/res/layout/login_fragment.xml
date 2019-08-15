@@ -18,6 +18,7 @@
 
 
         <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -53,6 +54,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp" android:id="@+id/error_textview" android:layout_weight="1"/>
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Snippet from "Add buttons" section goes here. -->
         <RelativeLayout

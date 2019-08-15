@@ -15,8 +15,15 @@ import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import java.io.IOException
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import com.google.gson.GsonBuilder
-
+import kotlinx.android.synthetic.main.login_fragment.email_edit_text
+import kotlinx.android.synthetic.main.login_fragment.email_text_input
+import kotlinx.android.synthetic.main.login_fragment.password_edit_text
+import kotlinx.android.synthetic.main.login_fragment.password_text_input
+import kotlinx.android.synthetic.main.register_fragment.*
+import org.json.JSONObject
 
 /**
  * Fragment representing the login screen for Shrine.
@@ -39,18 +46,28 @@ class LoginFragment : Fragment() {
                 password_text_input.error = "Please enter a password"
             }
             else {
-//                Thread.sleep(10000)
                 doAsync {
-                    println("calling authenticate")
                     var response = authenticate(email, password)
-                    println("got data back" + response)
-                    (activity as NavigationHost).navigateTo(ListingFragment(), false) //no back  button functionality
-                    try {
-//                        val gson = GsonBuilder().create()
-//                        val token = gson.fromJson(response, auth::class.java)
-                    } catch (e: Exception) {
-                        println("error in the try" + e.toString())
+                    println("respone")
+                    println(response)
+                    if (response.contains("error")) {
+                        val handler = Handler(Looper.getMainLooper());
+                        handler.post({
+                            error_textview.text = "Can't login with this information"
+                        })
+                    } else {
+                        try {
+                            val gson = GsonBuilder().create()
+                            val token = gson.fromJson(response, token::class.java)
+                            println("token object looks like ")
+                            println(token.token);
+                            Global.setToken(token.token)
+                            (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
+                        } catch (e: Exception) {
+                            println("error in the try" + e.toString())
+                        }
                     }
+
                 }
             }
 
@@ -84,30 +101,36 @@ class LoginFragment : Fragment() {
         val response = ""
         println("email: " + email.toString() + "\npassword: " + password.toString())
 
-        //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
-        val json = """
+        return HttpUtilities.posturl("https://flaskappmysql.appspot.com/login", """
             {
                 "email":"${email}",
                 "password":"${password}"
             }
-            """.trimIndent()
-        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-
-
-        val url = "https://flaskappmysql.appspot.com/login"
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
-        try {
-            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
-            val bodystr =  response.body().string() // this can be consumed only once
-            return bodystr
-        } catch (e: Exception){
-            println("Failed"+e.toString())
-            return "fail"
-        }
+            """)
+        //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
+//        val json = """
+//            {
+//                "email":"${email}",
+//                "password":"${password}"
+//            }
+//            """.trimIndent()
+//        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
+//
+//
+//        val url = "https://flaskappmysql.appspot.com/login"
+//        val client = OkHttpClient()
+//        val request = Request.Builder()
+//            .url(url)
+//            .post(body)
+//            .build()
+//        try {
+//            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
+//            val bodystr =  response.body().string() // this can be consumed only once
+//            return bodystr
+//        } catch (e: Exception){
+//            println("Failed"+e.toString())
+//            return "fail"
+//        }
     }
 
 }

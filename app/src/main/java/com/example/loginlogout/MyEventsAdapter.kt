@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.TextView
+import org.w3c.dom.Text
 import java.util.ArrayList
 
 /**
  * Orignial author: Parsania Hardik on 03-Jan-17.
  * Modified by Ramesh Yerraballi on 8/12/19
  */
-class EventsAdapter(private val context: Context, private val eventsModelArrayList: ArrayList<Event_Model>) :
+class MyEventsAdapter(private val context: Context, private val myEventsModelArrayList: ArrayList<My_Event_Model>) :
     BaseAdapter() {
 
     override fun getViewTypeCount(): Int {
@@ -25,11 +27,11 @@ class EventsAdapter(private val context: Context, private val eventsModelArrayLi
     }
 
     override fun getCount(): Int {
-        return eventsModelArrayList.size
+        return myEventsModelArrayList.size
     }
 
     override fun getItem(position: Int): Any {
-        return eventsModelArrayList[position]
+        return myEventsModelArrayList[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -44,10 +46,13 @@ class EventsAdapter(private val context: Context, private val eventsModelArrayLi
             holder = ViewHolder()
             val inflater = context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = inflater.inflate(R.layout.user, null, true)
+            convertView = inflater.inflate(R.layout.myevent, null, true)
 
             holder.name = convertView!!.findViewById(R.id.name) as TextView
-            holder.email = convertView.findViewById(R.id.email) as TextView
+            holder.venue_name = convertView.findViewById(R.id.venue_name) as TextView
+            holder.event_day = convertView.findViewById(R.id.event_day) as TextView
+            holder.start_time = convertView.findViewById(R.id.start_time) as TextView
+
 
             convertView.tag = holder
         } else {
@@ -55,7 +60,10 @@ class EventsAdapter(private val context: Context, private val eventsModelArrayLi
             holder = convertView.tag as ViewHolder
         }
 
-//        holder.name!!.text = "Name: " + usersModelArrayList[position].getNames()
+        holder.name!!.text = "Name: " + myEventsModelArrayList[position].getNames()
+        holder.venue_name!!.text = "Venue Name: " + myEventsModelArrayList[position].getVenueNames()
+        holder.event_day!!.text = "Date: " + myEventsModelArrayList[position].getEventDays()
+        holder.start_time!!.text = "Time: " + myEventsModelArrayList[position].getStartTimes()
 
         return convertView
     }
@@ -63,7 +71,9 @@ class EventsAdapter(private val context: Context, private val eventsModelArrayLi
     private inner class ViewHolder {
 
         var name: TextView? = null
-        var email: TextView? = null
+        var venue_name: TextView? = null
+        var event_day: TextView? = null
+        var start_time: TextView? = null
     }
 
 }

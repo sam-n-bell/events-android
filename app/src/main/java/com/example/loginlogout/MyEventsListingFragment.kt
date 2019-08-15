@@ -1,0 +1,101 @@
+package com.example.loginlogout
+
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ListView
+import androidx.fragment.app.Fragment
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import kotlinx.android.synthetic.main.my_events_listing_fragment.view.*
+import org.jetbrains.anko.doAsync
+import org.json.JSONArray
+import org.json.JSONException
+import java.io.IOException
+import java.util.ArrayList
+
+class MyEventsListingFragment : Fragment() {
+    private val jsoncode = 1
+
+    private var response: String? = null
+    private var userlist: ListView? = null
+    private var eventlist: ListView? = null
+    private var userArrayList: ArrayList<String>? = null
+    private var userModelArrayList: ArrayList<User_Model>? = null
+    private var eventsModelArrayList: ArrayList<My_Event_Model>? = null
+    private var customAdapter: CustomAdapter? = null
+    private var myEventsAdapter: MyEventsAdapter? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        val view =  inflater.inflate(R.layout.my_events_listing_fragment, container, false)
+
+        println("from myevents fragment")
+        println(Global.getToken())
+
+        eventlist = view.eventlist
+
+        //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
+        doAsync {
+            try {
+                eventsModelArrayList = getMyEvents()
+                // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
+                myEventsAdapter = MyEventsAdapter(view.context, eventsModelArrayList!!)
+                // set the custom adapter for the userlist viewing
+                val handler = Handler(Looper.getMainLooper());
+                handler.post({
+                    eventlist!!.adapter = myEventsAdapter
+                })
+            } catch (e: Exception) {
+                println("error in doasync" + e.toString())
+            } finally {
+            }
+
+        }
+
+        view.back_button.setOnClickListener({
+            (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
+        })
+        return view;
+    }
+
+
+    private fun getMyEvents(): ArrayList<My_Event_Model> {
+        println("getmyevents")
+        val eventModelArrayList = ArrayList<My_Event_Model>()
+
+        val url = "https://flaskappmysql.appspot.com/my-events"
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .header("Authorization", "Bearer " + Global.getToken())
+            .build()
+        try {
+            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
+            val bodystr =  response.body().string() // this can be consumed only once
+            val dataArray = JSONArray(bodystr)
+            //loops and turns JSON object array into arraylist of User Model
+            for (i in 0 until dataArray.length()) {
+                val eventModel = My_Event_Model()
+                val dataobj = dataArray.getJSONObject(i)
+                eventModel.setCreatedBys(dataobj.getInt("created_by"))
+                eventModel.setEventDays(dataobj.getString("event_day"))
+                eventModel.setEventIds(dataobj.getInt("event_id"))
+                eventModel.setNames(dataobj.getString("name"))
+                eventModel.setStartTimes(dataobj.getString("start_time"))
+                eventModel.setVenueNames(dataobj.getString("venue_name"))
+                eventModelArrayList.add(eventModel)
+            }
+            return eventModelArrayList
+        } catch (e: Exception){
+            println("Failed"+e.toString())
+            return ArrayList()
+        }
+    }
+
+
+}
