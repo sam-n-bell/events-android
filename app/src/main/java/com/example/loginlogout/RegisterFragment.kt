@@ -103,7 +103,7 @@ class RegisterFragment : Fragment() {
         //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
         val json = """
             { 
-                "name":"${name}"
+                "name":"${name}",
                 "email":"${email}",
                 "password":"${password}"
             }
