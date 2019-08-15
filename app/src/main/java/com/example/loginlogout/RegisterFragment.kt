@@ -118,6 +118,7 @@ class RegisterFragment : Fragment() {
             .post(body)
             .build()
         try {
+            println("whatever")
             val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
             val bodystr =  response.body().string() // this can be consumed only once
             return bodystr
