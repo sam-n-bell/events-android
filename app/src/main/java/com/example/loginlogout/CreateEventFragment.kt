@@ -7,53 +7,47 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
-import kotlinx.android.synthetic.main.day_events_listing_fragment.*
-import kotlinx.android.synthetic.main.day_events_listing_fragment.view.*
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.create_event_fragment.*
+import kotlinx.android.synthetic.main.create_event_fragment.view.*
 
 
 class CreateEventFragment  : Fragment() {
 
-    private var eventlist: ListView? = null
-    private var eventsModelArrayList: ArrayList<Event_Model>? = null
-    private var eventsAdapter: EventsAdapter? = null
-
+//    private var venues: ArrayList<Venue_Model>? = null
+    var spinner: Spinner? = null
+    var venue_id: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.day_events_listing_fragment, container, false)
-        // Set an error if the password is less than 8 characters.
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
-
-        val myFormat = "yyyy-MM-dd"
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
-        view.date_display.setText(sdf.format(c.time))
-
-        eventlist = view.eventlist
+        val view = inflater.inflate(R.layout.create_event_fragment, container, false)
+        lateinit var venues: ArrayList<Venue_Model>
 
         doAsync {
             try {
-                eventsModelArrayList = getEvents(view.date_display.text!!.toString())
-                // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
-                eventsAdapter = EventsAdapter(view.context, eventsModelArrayList!!)
-                // set the custom adapter for the userlist viewing
-                val handler = Handler(Looper.getMainLooper());
+                val venueModelArrayList = getVenues()
+                venues = venueModelArrayList
+
+                val arrayAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, venueModelArrayList)
+
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                val handler = Handler(Looper.getMainLooper())
                 handler.post({
                     try {
-                        eventlist!!.adapter = eventsAdapter
+                        venue_spinner.setAdapter(arrayAdapter)
+                        venue_spinner!!.adapter = arrayAdapter
                     } catch (e: Exception){
-                        // :D
+                        println("problem in createvent " + e.toString())
                     }
                 })
             } catch (e: Exception) {
@@ -62,50 +56,63 @@ class CreateEventFragment  : Fragment() {
             }
         }
 
+        view.venue_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
+                venue_id = venues[pos].getVenueIds()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<out Adapter>?) {
+
+            }
+
+        }
 
 
-        view.pick_date_button.setOnClickListener({
-            val dpd = DatePickerDialog(view.context, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
-                val cal = Calendar.getInstance()
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, mMonth)
-                cal.set(Calendar.DAY_OF_MONTH, mDay)
-                date_display.setText(sdf.format(cal.time))
-                println("closing")
-                doAsync {
-                    try {
-                        eventsModelArrayList = getEvents(date_display.text!!.toString())
-                        // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
-                        eventsAdapter = EventsAdapter(view.context, eventsModelArrayList!!)
-                        // set the custom adapter for the userlist viewing
-                        val handler = Handler(Looper.getMainLooper());
-                        handler.post({
-                            try {
-                                eventlist!!.adapter = eventsAdapter
-                            } catch (e: Exception){
-                            }
-                        })
-                    } catch (e: Exception) {
-                        println("error in doasync" + e.toString())
-                    } finally {
-                    }
-                }
-            }, year, month, day)
-            dpd.show()
-        })
 
-        view.back_button.setOnClickListener({
-            (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
-        })
+//        view.pick_date_button.setOnClickListener({
+//            val dpd = DatePickerDialog(view.context, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+//                val cal = Calendar.getInstance()
+//                cal.set(Calendar.YEAR, year)
+//                cal.set(Calendar.MONTH, mMonth)
+//                cal.set(Calendar.DAY_OF_MONTH, mDay)
+//                date_display.setText(sdf.format(cal.time))
+//                println("closing")
+//                doAsync {
+//                    try {
+//                        eventsModelArrayList = getEvents(date_display.text!!.toString())
+//                        // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
+//                        eventsAdapter = EventsAdapter(view.context, eventsModelArrayList!!)
+//                        // set the custom adapter for the userlist viewing
+//                        val handler = Handler(Looper.getMainLooper());
+//                        handler.post({
+//                            try {
+//                                eventlist!!.adapter = eventsAdapter
+//                            } catch (e: Exception){
+//                            }
+//                        })
+//                    } catch (e: Exception) {
+//                        println("error in doasync" + e.toString())
+//                    } finally {
+//                    }
+//                }
+//            }, year, month, day)
+//            dpd.show()
+//        })
+
+//        view.back_button.setOnClickListener({
+//            (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
+//        })
 
         return view
     }
 
 
-    private fun getEvents(day: String): ArrayList<Event_Model> {
-        val eventModelArrayList = ArrayList<Event_Model>()
 
-        val url = "https://flaskappmysql.appspot.com/events?date=" + day
+    private fun getVenues(): ArrayList<Venue_Model> {
+        val venueModelArrayList = ArrayList<Venue_Model>()
+
+        val url = "https://flaskappmysql.appspot.com/venues"
         println("url is " + url)
         val client = OkHttpClient()
         val request = Request.Builder()
@@ -118,20 +125,16 @@ class CreateEventFragment  : Fragment() {
             val dataArray = JSONArray(bodystr)
             //loops and turns JSON object array into arraylist of User Model
             for (i in 0 until dataArray.length()) {
-                val eventModel = Event_Model()
+                val venueModel = Venue_Model()
                 val dataobj = dataArray.getJSONObject(i)
-                eventModel.setCreatedBys(dataobj.getInt("created_by"))
-                eventModel.setEventDays(dataobj.getString("event_day"))
-                eventModel.setEventIds(dataobj.getInt("event_id"))
-                eventModel.setNames(dataobj.getString("name"))
-                eventModel.setStartTimes(dataobj.getString("start_time"))
-                eventModel.setVenueNames(dataobj.getString("venue_name"))
-                eventModelArrayList.add(eventModel)
+                venueModel.setVenueIds(dataobj.getInt("venue_id"))
+                venueModel.setVenueNames(dataobj.getString("name"))
+                venueModelArrayList.add(venueModel)
             }
-            return eventModelArrayList
+            return venueModelArrayList
         } catch (e: Exception){
             println("Failed"+e.toString())
-            return eventModelArrayList
+            return venueModelArrayList
         }    }
 
 

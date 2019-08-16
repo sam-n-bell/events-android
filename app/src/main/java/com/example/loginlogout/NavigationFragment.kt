@@ -30,9 +30,12 @@ class NavigationFragment : Fragment() {
         })
 
         view.logout_button.setOnClickListener({
-            //if i knew how i'd remove a stored token here
             Global.setToken("")
             (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
+        })
+
+        view.create_event_button.setOnClickListener({
+            (activity as NavigationHost).navigateTo(CreateEventFragment(), false) //no back  button functionality
         })
 
         return view;

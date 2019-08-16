@@ -29,6 +29,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/all_events_button"/>
     <Button
+            android:text="Create Event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/create_event_button"/>
+    <Button
             android:text="logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/logout_button"/>

@@ -63,6 +63,7 @@ class DayEventsFragment  : Fragment() {
         }
 
 
+
         view.pick_date_button.setOnClickListener({
             val dpd = DatePickerDialog(view.context, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                 val cal = Calendar.getInstance()
@@ -82,7 +83,6 @@ class DayEventsFragment  : Fragment() {
                             try {
                                 eventlist!!.adapter = eventsAdapter
                             } catch (e: Exception){
-                                println("Problem is the listen doasync" + e.toString())
                             }
                         })
                     } catch (e: Exception) {
@@ -133,5 +133,7 @@ class DayEventsFragment  : Fragment() {
             println("Failed"+e.toString())
             return eventModelArrayList
         }    }
+
+
 
 }
