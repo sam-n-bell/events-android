@@ -38,12 +38,19 @@ class RegisterFragment : Fragment() {
             var name = name_edit_text.text!!
             var email = email_edit_text.text!!
             var password = password_edit_text.text!!
+            var password_confirm = password_confirm_edit_text.text!!
 
             if (email.length == 0 || email == null) {
                 email_text_input.error = "Please enter an email"
             }
             else if (password.length == 0 || password == null) {
                 password_text_input.error = "Please enter a password"
+            }
+            else if (password_confirm.length ==0 || password_confirm == null){
+                password_confirm_text_input.error = "Please confirm your password"
+            }
+            else if (!(password_text_input == password_confirm_text_input)){
+                password_confirm_text_input.error = "Passwords must match"
             }
             else if (name.length ==0 || name == null) {
                 name_text_input.error = "Please enter a name"
@@ -52,7 +59,7 @@ class RegisterFragment : Fragment() {
 //                Thread.sleep(10000)
                 doAsync {
                     println("calling register")
-                    var response = register(email, password, name)
+                    var response = register(email, password, password_confirm, name)
                     println("got data back" + response)
                     (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
                     try {
@@ -83,6 +90,20 @@ class RegisterFragment : Fragment() {
             false
         })
 
+        view.password_confirm_edit_text.setOnKeyListener({ _, _, _ ->
+            if (password_confirm_edit_text.text!!.length > 0) {
+                password_confirm_text_input.error = null
+            }
+            false
+        })
+
+        view.password_confirm_edit_text.setOnKeyListener({ _, _, _ ->
+            if (!(password_text_input == password_confirm_text_input)) {
+                password_confirm_text_input.error = "Please match your passwords"
+            }
+            false
+        })
+
         view.name_edit_text.setOnKeyListener({ _, _, _ ->
             if (name_edit_text.text!!.length > 0) {
                 name_text_input.error = null
@@ -96,16 +117,17 @@ class RegisterFragment : Fragment() {
 
 
 
-    private fun register(email: Editable?, password: Editable?, name: Editable?): String {
+    private fun register(email: Editable?, password: Editable?, password_confirm: Editable?, name: Editable?): String {
         val response = ""
-        println("name: " + name.toString() +"email: " + email.toString() + "\npassword: " + password.toString())
+        println("name: " + name.toString() +"email: " + email.toString() + "\npassword: " + password.toString() + "\npassword confirmation: " + password_confirm.toString())
 
         //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
         val json = """
             { 
                 "name":"${name}",
                 "email":"${email}",
-                "password":"${password}"
+                "password":"${password}",
+                "password confirmation": "${password_confirm}"
             }
             """.trimIndent()
         val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
