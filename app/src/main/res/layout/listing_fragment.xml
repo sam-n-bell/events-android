@@ -20,7 +20,7 @@
             android:layout_height="491dp"
             android:id="@+id/userlist"/>
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/back_button"
+            android:id="@+id/logout_button"
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_alignParentEnd="true"

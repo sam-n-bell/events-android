@@ -13,8 +13,6 @@ import com.squareup.okhttp.Request
 import kotlinx.android.synthetic.main.my_events_listing_fragment.view.*
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
-import org.json.JSONException
-import java.io.IOException
 import java.util.ArrayList
 
 class MyEventsListingFragment : Fragment() {
@@ -34,9 +32,6 @@ class MyEventsListingFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.my_events_listing_fragment, container, false)
 
-        println("from myevents fragment")
-        println(Global.getToken())
-
         eventlist = view.eventlist
 
         //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
@@ -48,7 +43,12 @@ class MyEventsListingFragment : Fragment() {
                 // set the custom adapter for the userlist viewing
                 val handler = Handler(Looper.getMainLooper());
                 handler.post({
-                    eventlist!!.adapter = myEventsAdapter
+                    try {
+                        eventlist!!.adapter = myEventsAdapter
+                    } catch (e: Exception){
+                        // :D
+                    }
+
                 })
             } catch (e: Exception) {
                 println("error in doasync" + e.toString())
@@ -65,7 +65,6 @@ class MyEventsListingFragment : Fragment() {
 
 
     private fun getMyEvents(): ArrayList<My_Event_Model> {
-        println("getmyevents")
         val eventModelArrayList = ArrayList<My_Event_Model>()
 
         val url = "https://flaskappmysql.appspot.com/my-events"

@@ -19,11 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="491dp"
             android:id="@+id/eventlist"/>
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/back_button"
+    <Button
+            android:text="BACK"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="BACK"/>
+            android:layout_height="wrap_content" android:id="@+id/back_button"/>
 </LinearLayout>

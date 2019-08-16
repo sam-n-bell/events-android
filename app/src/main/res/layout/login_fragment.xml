@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="132dp"
-                android:text="Email and Password"
+                android:text="Login to Events"
                 android:textAllCaps="true"
                 android:textSize="16sp" />
 
