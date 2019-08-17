@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlinx.android.synthetic.main.create_event_fragment.*
 import kotlinx.android.synthetic.main.create_event_fragment.view.*
+import kotlinx.android.synthetic.main.login_fragment.*
+import kotlinx.android.synthetic.main.navigation_fragment.view.*
 
 
 class CreateEventFragment  : Fragment() {
@@ -148,7 +151,94 @@ class CreateEventFragment  : Fragment() {
             dpd.show()
         })
 
+        view.create_button.setOnClickListener({
+            var event_name = event_name_edit_text.text!!
+            var num_players = num_players_edit_text.text!!
+            var num_guests = num_guests_edit_text.text!!
+
+            if (event_name.length == 0 || event_name.equals("")) {
+                event_name_text_input.error = "Please enter a name for the event"
+            }
+            else if (num_players == null) {
+                num_players_text_input.error = "Please provide space for others."
+            }
+            else if (Integer.parseInt(num_players_edit_text.getText().toString()) < 2) {
+                    num_players_text_input.error = "Please provide space for others."
+            }
+            else if (num_guests == null) {
+            num_players_text_input.error = "Please provide space for others."
+            }
+            else if (Integer.parseInt(num_guests_edit_text.getText().toString()) < 0
+                    || Integer.parseInt(num_guests_edit_text.getText().toString()) + 1 > Integer.parseInt(num_players_edit_text.getText().toString())) {
+                         num_guests_text_input.error = "Invalid number of guests"
+            } else {
+                doAsync {
+                    var response = createEvent(event_name, num_guests, num_players)
+                    if (response.contains("error") || response.contains("message")) {
+                        val handler = Handler(Looper.getMainLooper());
+                        handler.post({
+                            create_event_error_textview.text = "Some problem occured"
+                        })
+                    } else {
+                        val handler = Handler(Looper.getMainLooper());
+                        handler.post({
+                            create_event_error_textview.text = null
+                        })
+                        (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
+                    }
+
+                }
+            }
+
+            view.event_name_edit_text.setOnKeyListener({ _, _, _ ->
+                if (event_name_edit_text.text!!.length > 0) {
+                    event_name_text_input.error = null
+                }
+                false
+            })
+
+            view.num_players_edit_text.setOnKeyListener({ _, _, _ ->
+                println(num_players_edit_text.text!!.length)
+                if (num_players_edit_text.text!!.length > 0) {
+                    num_players_text_input.error = null
+                }
+                false
+            })
+
+            view.num_guests_edit_text.setOnKeyListener({ _, _, _ ->
+                if (num_guests_edit_text.text!!.length > 0) {
+                    num_guests_text_input.error = null
+                }
+                false
+            })
+
+        })
+
+        view.back_button.setOnClickListener({
+            (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
+        })
+
+        view.num_guests_edit_text.setText("0")
+        view.num_players_edit_text.setText("4")
+
         return view
+    }
+
+    private fun createEvent(event_name: Editable, num_guests: Editable, num_players: Editable): String {
+        return HttpUtilities.posturl(
+            "https://flaskappmysql.appspot.com/events", """
+            {
+                "created_by": ${Global.getUserId()},
+                "event_day": "${event_day_text.text!!}",
+                "max_players": ${num_players},
+                "name": "${event_name}",
+                "num_guests": ${num_guests},
+                "participant_comment": "no comment",
+                "start_time": "${timeslot_value}",
+                "venue_id": ${venue_id}
+            }
+            """)
+//        return ""
     }
 
 

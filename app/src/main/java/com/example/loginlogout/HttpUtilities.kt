@@ -11,8 +11,6 @@ object HttpUtilities {
 
     fun posturl(url: String, body: String): String {
         val json = body.trimIndent()
-        println("json below:")
-        println(json)
         val requestbody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
         val client = OkHttpClient()
         val request = Request.Builder()

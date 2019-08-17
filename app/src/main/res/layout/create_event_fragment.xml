@@ -66,17 +66,71 @@
         <!-- Snippet from "Add text fields" section goes here. -->
 
         <!-- Snippet from "Add buttons" section goes here. -->
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/event_name_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Give Your Event a Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/event_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/num_players_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="How Many People Can Play?">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/num_players_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/num_guests_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="How Many Guests Are You Bringing?">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/num_guests_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="34dp" android:id="@+id/create_event_error_textview" android:layout_weight="1"/>
+
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/next_button"
+                    android:id="@+id/create_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="@string/button_next"/>
+                    android:text="@string/button_next" android:layout_marginRight="116dp"
+                    android:layout_marginEnd="116dp"/>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/button_cancel" android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
 
         </RelativeLayout>
     </LinearLayout>

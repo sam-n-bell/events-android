@@ -1,10 +1,16 @@
 package com.example.loginlogout
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.gson.GsonBuilder
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.android.synthetic.main.navigation_fragment.view.*
 import org.jetbrains.anko.doAsync
 
@@ -18,7 +24,24 @@ class NavigationFragment : Fragment() {
 
         //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
         doAsync {
-
+            if (Global.getUserId() == null) {
+                println("getting user id")
+                var response = authenticate(Global.getToken())
+                if (response.contains("error")) {
+                    val handler = Handler(Looper.getMainLooper());
+                    handler.post({
+                        error_textview.text = "Can't login with this information"
+                    })
+                } else {
+                    try {
+                        val gson = GsonBuilder().create()
+                        val user = gson.fromJson(response, user::class.java)
+                        Global.setUserId(user.user_id)
+                    } catch (e: Exception) {
+                        println("error in the try" + e.toString())
+                    }
+                }
+            }
         }
 
         view.my_events_button.setOnClickListener({
@@ -41,4 +64,19 @@ class NavigationFragment : Fragment() {
         return view;
     }
 
+    private fun authenticate(token: String): String {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("https://flaskappmysql.appspot.com/authenticate")
+            .header("Authorization", "Bearer " + Global.getToken())
+            .build()
+        val response = client.newCall(request).execute()
+        val body = response.body().string()
+        return body
+    }
+
+
 }
+
+class user(val user_id: Int)
+

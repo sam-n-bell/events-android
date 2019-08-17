@@ -133,5 +133,3 @@ class LoginFragment : Fragment() {
 }
 
 class token(val token: String)
-class user(val user_id: String)
-class auth(val token: token, val user: user)
