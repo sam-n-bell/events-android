@@ -60,6 +60,7 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
         holder.venue_name!!.text = "Venue Name: " + EventsModelArrayList[position].getVenueNames()
         holder.event_day!!.text = "Date: " + EventsModelArrayList[position].getEventDays()
         holder.start_time!!.text = "Time: " + EventsModelArrayList[position].getStartTimes()
+        holder.event_id = EventsModelArrayList[position].getEventIds()
 
         return convertView
     }
@@ -70,6 +71,7 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
         var venue_name: TextView? = null
         var event_day: TextView? = null
         var start_time: TextView? = null
+        var event_id: Int? = null
     }
 
 }

@@ -48,8 +48,6 @@ class LoginFragment : Fragment() {
             else {
                 doAsync {
                     var response = authenticate(email, password)
-                    println("respone")
-                    println(response)
                     if (response.contains("error")) {
                         val handler = Handler(Looper.getMainLooper());
                         handler.post({
@@ -100,7 +98,6 @@ class LoginFragment : Fragment() {
     private fun authenticate(email: Editable?, password: Editable?): String {
         val response = ""
         println("email: " + email.toString() + "\npassword: " + password.toString())
-
         return HttpUtilities.posturl("https://flaskappmysql.appspot.com/login", """
             {
                 "email":"${email}",

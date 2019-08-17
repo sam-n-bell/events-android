@@ -11,6 +11,8 @@ object HttpUtilities {
 
     fun posturl(url: String, body: String): String {
         val json = body.trimIndent()
+        println("json below:")
+        println(json)
         val requestbody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
         val client = OkHttpClient()
         val request = Request.Builder()
@@ -18,7 +20,7 @@ object HttpUtilities {
             .post(requestbody)
             .build()
         try {
-            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
+            val response = client.newCall(request).execute()
             val bodystr =  response.body().string() // this can be consumed only once
             return bodystr
         } catch (e: Exception){

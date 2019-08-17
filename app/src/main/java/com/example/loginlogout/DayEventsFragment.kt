@@ -13,6 +13,7 @@ import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
 import kotlinx.android.synthetic.main.day_events_listing_fragment.*
 import kotlinx.android.synthetic.main.day_events_listing_fragment.view.*
+import kotlinx.android.synthetic.main.event.view.*
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import java.text.SimpleDateFormat
@@ -52,6 +53,10 @@ class DayEventsFragment  : Fragment() {
                 handler.post({
                     try {
                         eventlist!!.adapter = eventsAdapter
+                        view.join_button.setOnClickListener({
+                            var id = view.join_button.id
+                            println("buttonid" + id.toString())
+                        })
                     } catch (e: Exception){
                         // :D
                     }
@@ -61,6 +66,7 @@ class DayEventsFragment  : Fragment() {
             } finally {
             }
         }
+
 
 
 
@@ -97,6 +103,9 @@ class DayEventsFragment  : Fragment() {
         view.back_button.setOnClickListener({
             (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
         })
+
+//        view.join_button.setOnClickListener({
+//        })
 
         return view
     }
