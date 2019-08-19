@@ -63,6 +63,7 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
             if (holder.created_by == Global.getUserId()) {
                 convertView.join_button.visibility = View.INVISIBLE
             }
+            //attempts to join event
             convertView.join_button.setOnClickListener({
                 doAsync {
                     var response = joinEvent(holder.event_id)

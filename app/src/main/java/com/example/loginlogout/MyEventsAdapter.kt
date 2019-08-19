@@ -59,7 +59,7 @@ class MyEventsAdapter(private val context: Context, private val myEventsModelArr
             // the getTag returns the viewHolder object set as a tag to the view
             holder = convertView.tag as ViewHolder
         }
-
+        //shows event information in list for each event
         holder.name!!.text = "Name: " + myEventsModelArrayList[position].getNames()
         holder.venue_name!!.text = "Venue Name: " + myEventsModelArrayList[position].getVenueNames()
         holder.event_day!!.text = "Date: " + myEventsModelArrayList[position].getEventDays()

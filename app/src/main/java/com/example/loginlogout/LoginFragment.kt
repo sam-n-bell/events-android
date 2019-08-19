@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.register_fragment.*
 import org.json.JSONObject
 
 /**
- * Fragment representing the login screen for Shrine.
+ * Fragment representing the login screen for the app.
  */
 class LoginFragment : Fragment() {
 
@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.login_fragment, container, false)
-        // Set an error if the password is less than 8 characters.
+        // Attempts to login
         view.next_button.setOnClickListener({
             var email = email_edit_text.text!!
             var password = password_edit_text.text!!
@@ -49,11 +49,13 @@ class LoginFragment : Fragment() {
                 doAsync {
                     var response = authenticate(email, password)
                     if (response.contains("error")) {
+                        //necessary to update main thread
                         val handler = Handler(Looper.getMainLooper());
                         handler.post({
                             error_textview.text = "Can't login with this information"
                         })
                     } else {
+                        //maps response string to token class and stores token id in global object
                         try {
                             val gson = GsonBuilder().create()
                             val token = gson.fromJson(response, token::class.java)
@@ -92,7 +94,7 @@ class LoginFragment : Fragment() {
     }
 
 
-
+    //sends password and email to flask to get validation, token, and user id
     private fun authenticate(email: Editable?, password: Editable?): String {
         return HttpUtilities.posturl("https://flaskappmysql.appspot.com/login", """
             {

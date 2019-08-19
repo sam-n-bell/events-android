@@ -25,14 +25,13 @@ class NavigationFragment : Fragment() {
         //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
         doAsync {
             if (Global.getUserId() == null) {
-                println("getting user id")
+               // println("getting user id")
                 var response = authenticate(Global.getToken())
                 if (response.contains("error")) {
-                    val handler = Handler(Looper.getMainLooper());
-                    handler.post({
-                        error_textview.text = "Can't login with this information"
-                    })
+                    (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
+
                 } else {
+                    //mapping response to user class and then stores user id in global object
                     try {
                         val gson = GsonBuilder().create()
                         val user = gson.fromJson(response, user::class.java)
@@ -63,7 +62,7 @@ class NavigationFragment : Fragment() {
 
         return view;
     }
-
+    //gets userid from flask
     private fun authenticate(token: String): String {
         val client = OkHttpClient()
         val request = Request.Builder()

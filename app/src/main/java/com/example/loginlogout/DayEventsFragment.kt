@@ -31,7 +31,7 @@ class DayEventsFragment  : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.day_events_listing_fragment, container, false)
-        // Set an error if the password is less than 8 characters.
+        // setting date to current day
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -44,6 +44,7 @@ class DayEventsFragment  : Fragment() {
         eventlist = view.eventlist
 
         doAsync {
+            //getting all the events on that day and showing them in the UI
             try {
                 eventsModelArrayList = getEvents(view.date_display.text!!.toString())
                 // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
@@ -55,7 +56,6 @@ class DayEventsFragment  : Fragment() {
                         eventlist!!.adapter = eventsAdapter
                         view.join_button.setOnClickListener({
                             var id = view.join_button.id
-                            println("buttonid" + id.toString())
                         })
                     } catch (e: Exception){
                         // :D
@@ -63,13 +63,12 @@ class DayEventsFragment  : Fragment() {
                 })
             } catch (e: Exception) {
                 println("error in doasync" + e.toString())
-            } finally {
             }
         }
 
 
 
-
+        //when you change the day, it gets all the events for the new day
         view.pick_date_button.setOnClickListener({
             val dpd = DatePickerDialog(view.context, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                 val cal = Calendar.getInstance()
@@ -92,7 +91,6 @@ class DayEventsFragment  : Fragment() {
                         })
                     } catch (e: Exception) {
                         println("error in doasync" + e.toString())
-                    } finally {
                     }
                 }
             }, year, month, day)
@@ -107,12 +105,11 @@ class DayEventsFragment  : Fragment() {
         return view
     }
 
-
+    //makes HTTP requests to get events from our flask code
     private fun getEvents(day: String): ArrayList<Event_Model> {
         val eventModelArrayList = ArrayList<Event_Model>()
 
         val url = "https://flaskappmysql.appspot.com/events?date=" + day
-        println("url is " + url)
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
@@ -123,6 +120,7 @@ class DayEventsFragment  : Fragment() {
             val bodystr =  response.body().string() // this can be consumed only once
             val dataArray = JSONArray(bodystr)
             //loops and turns JSON object array into arraylist of User Model
+            //basically creating an array of events that gets shown in the UI
             for (i in 0 until dataArray.length()) {
                 val eventModel = Event_Model()
                 val dataobj = dataArray.getJSONObject(i)

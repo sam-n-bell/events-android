@@ -73,12 +73,7 @@ class RegisterFragment : Fragment() {
                             register_error_text.text = "Unable to sign up with this information"
                         })
                     }
-                    try {
-//                        val gson = GsonBuilder().create()
-//                        val token = gson.fromJson(response, auth::class.java)
-                    } catch (e: Exception) {
-                        println("error in the try" + e.toString())
-                    }
+
                 }
             }
 
@@ -127,9 +122,9 @@ class RegisterFragment : Fragment() {
     }
 
 
-
+   //sends information to flask register route
     private fun register(email: Editable?, password: Editable?, password_confirm: Editable?, name: Editable?): String {
-        val response = ""
+
 
         //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
         val json = """

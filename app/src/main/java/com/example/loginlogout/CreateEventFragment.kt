@@ -25,11 +25,11 @@ import kotlinx.android.synthetic.main.navigation_fragment.view.*
 
 class CreateEventFragment  : Fragment() {
 
-//    private var venues: ArrayList<Venue_Model>? = null
+
     var spinner: Spinner? = null
     var venue_id: Int? = null
     var timeslot_value: String? = null
-//    lateinit var timeslots: ArrayList<TimeSlot_Model>
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,6 +59,7 @@ class CreateEventFragment  : Fragment() {
 
                 val handler = Handler(Looper.getMainLooper())
                 handler.post({
+                    //populating spinner with venues
                     try {
                         venue_spinner.setAdapter(arrayAdapter)
                         venue_spinner!!.adapter = arrayAdapter
@@ -75,10 +76,10 @@ class CreateEventFragment  : Fragment() {
         view.venue_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
-                venue_id = venues[pos].getVenueIds()
+                venue_id = venues[pos].getVenueIds() //getting venue id of selecting option
                 doAsync {
 
-                    val timeSlotsArrayList = getVenueAvailability()
+                    val timeSlotsArrayList = getVenueAvailability() //get available time slots for venue
                     timeslots = timeSlotsArrayList
 
                     val arrayAdapter2 = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, timeSlotsArrayList)
@@ -87,6 +88,7 @@ class CreateEventFragment  : Fragment() {
 
                     val handler2 = Handler(Looper.getMainLooper())
                     handler2.post({
+                        //populate timeslot spinner with the options
                         try {
                             timeslot_spinner.setAdapter(arrayAdapter2)
                             timeslot_spinner!!.adapter = arrayAdapter2
@@ -106,6 +108,7 @@ class CreateEventFragment  : Fragment() {
         view.timeslot_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
+                //getting the value of the selecting timeslot
                 timeslot_value = timeslots[pos].getValues()
             }
 
@@ -114,7 +117,7 @@ class CreateEventFragment  : Fragment() {
             }
 
         }
-
+        //setting up the date selector
         view.event_day_button.setOnClickListener({
             val dpd = DatePickerDialog(view.context, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                 val cal = Calendar.getInstance()
@@ -122,6 +125,7 @@ class CreateEventFragment  : Fragment() {
                 cal.set(Calendar.MONTH, mMonth)
                 cal.set(Calendar.DAY_OF_MONTH, mDay)
                 event_day_text.setText(sdf.format(cal.time))
+                //whenever date changes, get venue availability (timeslots)
                 doAsync {
                     if (venue_id !== null) {
                         doAsync {
@@ -148,7 +152,7 @@ class CreateEventFragment  : Fragment() {
             }, year, month, day)
             dpd.show()
         })
-
+        //validates we have info, and creates the event
         view.create_button.setOnClickListener({
             var event_name = event_name_edit_text.text!!
             var num_players = num_players_edit_text.text!!
@@ -182,6 +186,7 @@ class CreateEventFragment  : Fragment() {
                         handler.post({
                             create_event_error_textview.text = null
                         })
+                        //event created, navigating to the navigation page
                         (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
                     }
 
@@ -237,7 +242,7 @@ class CreateEventFragment  : Fragment() {
             """)
     }
 
-
+     //sets up array to show timeslots in spinner
     private fun getVenueAvailability(): ArrayList<TimeSlot_Model> {
         val timeslotModelArrayList = ArrayList<TimeSlot_Model>()
 
@@ -265,7 +270,7 @@ class CreateEventFragment  : Fragment() {
         }
         return timeslotModelArrayList
     }
-
+    //sets up array to show venues in spinner
     private fun getVenues(): ArrayList<Venue_Model> {
         val venueModelArrayList = ArrayList<Venue_Model>()
 

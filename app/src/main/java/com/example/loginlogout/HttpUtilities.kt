@@ -8,7 +8,7 @@ import org.json.JSONObject
 
 object HttpUtilities {
 
-
+    //reusable code to make post requests
     fun posturl(url: String, body: String): String {
         val json = body.trimIndent()
         val requestbody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)

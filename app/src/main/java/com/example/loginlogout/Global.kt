@@ -2,8 +2,8 @@ package com.example.loginlogout
 
 object Global {
 
-    private var token = ""
-    private var user_id: Int? = null
+    private var token = "" //use for routes that require authentication
+    private var user_id: Int? = null //id of person logged in
     private val url = "https://flaskappmysql.appspot.com"
 
     fun setToken(token: String){

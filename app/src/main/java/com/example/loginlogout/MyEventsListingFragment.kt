@@ -37,13 +37,14 @@ class MyEventsListingFragment : Fragment() {
 
         //Here we wan't to use a Custom Adapter that is tied to a custom Data Model
         doAsync {
+            //getting events i have created or joined
             try {
                 eventsModelArrayList = getMyEvents()
                 // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
                 myEventsAdapter = MyEventsAdapter(view.context, eventsModelArrayList!!)
-                // set the custom adapter for the userlist viewing
                 val handler = Handler(Looper.getMainLooper());
                 handler.post({
+                    //put inside try catch so app doesn't crash if no events are returned
                     try {
                         eventlist!!.adapter = myEventsAdapter
                     } catch (e: Exception){
@@ -64,7 +65,7 @@ class MyEventsListingFragment : Fragment() {
         return view;
     }
 
-
+    //calling events in flask to get events based on token
     private fun getMyEvents(): ArrayList<My_Event_Model> {
         val eventModelArrayList = ArrayList<My_Event_Model>()
 
