@@ -57,8 +57,6 @@ class LoginFragment : Fragment() {
                         try {
                             val gson = GsonBuilder().create()
                             val token = gson.fromJson(response, token::class.java)
-                            println("token object looks like ")
-                            println(token.token);
                             Global.setToken(token.token)
                             (activity as NavigationHost).navigateTo(NavigationFragment(), false) //no back  button functionality
                         } catch (e: Exception) {
@@ -96,38 +94,12 @@ class LoginFragment : Fragment() {
 
 
     private fun authenticate(email: Editable?, password: Editable?): String {
-        val response = ""
-        println("email: " + email.toString() + "\npassword: " + password.toString())
         return HttpUtilities.posturl("https://flaskappmysql.appspot.com/login", """
             {
                 "email":"${email}",
                 "password":"${password}"
             }
             """)
-        //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
-//        val json = """
-//            {
-//                "email":"${email}",
-//                "password":"${password}"
-//            }
-//            """.trimIndent()
-//        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
-//
-//
-//        val url = "https://flaskappmysql.appspot.com/login"
-//        val client = OkHttpClient()
-//        val request = Request.Builder()
-//            .url(url)
-//            .post(body)
-//            .build()
-//        try {
-//            val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
-//            val bodystr =  response.body().string() // this can be consumed only once
-//            return bodystr
-//        } catch (e: Exception){
-//            println("Failed"+e.toString())
-//            return "fail"
-//        }
     }
 
 }

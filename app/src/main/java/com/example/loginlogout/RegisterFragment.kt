@@ -42,8 +42,6 @@ class RegisterFragment : Fragment() {
             var password = password_edit_text.text!!
             var password_confirm = password_confirm_edit_text.text!!
 
-            println("password as string is " + password.toString())
-
             if (email.length == 0 || email == null) {
                 email_text_input.error = "Please enter an email"
             }
@@ -54,7 +52,6 @@ class RegisterFragment : Fragment() {
                 password_confirm_text_input.error = "Please confirm your password"
             }
             else if (!password.toString().equals(password_confirm.toString())) {
-                println("onClickListener comparing " + password + " to " + password_confirm)
                 password_confirm_text_input.error = "Passwords must match"
             }
             else if (name.length ==0 || name == null) {
@@ -62,13 +59,10 @@ class RegisterFragment : Fragment() {
             }
             else {
                 doAsync {
-                    println("calling register")
                     var response = register(email, password, password_confirm, name)
-                    println("got data back" + response)
                     if (response.contains("registered")) {
                         (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
                     } else if (response.contains("Email already in use")) {
-                        println("else if from register fragment")
                         val handler = Handler(Looper.getMainLooper());
                         handler.post({
                             register_error_text.text = "That email is already on file"
@@ -115,7 +109,6 @@ class RegisterFragment : Fragment() {
         })
 
         view.password_confirm_edit_text.setOnKeyListener({ _, _, _ ->
-            println("onKeyListener comparing " + view.password_confirm_edit_text.text!! + " to " + view.password_edit_text.text!!)
             if ((view.password_confirm_edit_text.text!!.toString().equals(view.password_edit_text.text!!.toString()))) {
                 password_confirm_text_input.error = null
             }
@@ -137,7 +130,6 @@ class RegisterFragment : Fragment() {
 
     private fun register(email: Editable?, password: Editable?, password_confirm: Editable?, name: Editable?): String {
         val response = ""
-        println("name: " + name.toString() +"email: " + email.toString() + "\npassword: " + password.toString() + "\npassword confirmation: " + password_confirm.toString())
 
         //https://stackoverflow.com/questions/48395067/okhttp3-requestbody-in-kotlin
         val json = """
@@ -158,12 +150,10 @@ class RegisterFragment : Fragment() {
             .post(body)
             .build()
         try {
-            println("whatever")
             val response = client.newCall(request).execute() //GETS URL. If this line freezes, check network & restart virtual device
             val bodystr =  response.body().string() // this can be consumed only once
             return bodystr
         } catch (e: Exception){
-            println("Failed"+e.toString())
             return "fail"
         }
     }

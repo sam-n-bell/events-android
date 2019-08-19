@@ -61,9 +61,6 @@ class ListingFragment : Fragment() {
         // set the custom adapter for the userlist viewing
         userlist!!.adapter = customAdapter
 
-//        view.logout_button.setOnClickListener({
-//            (activity as NavigationHost).navigateTo(LogoutFragment(), false) //no back  button functionality
-//        })
         return view;
     }
 

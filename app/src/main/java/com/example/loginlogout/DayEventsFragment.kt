@@ -77,7 +77,6 @@ class DayEventsFragment  : Fragment() {
                 cal.set(Calendar.MONTH, mMonth)
                 cal.set(Calendar.DAY_OF_MONTH, mDay)
                 date_display.setText(sdf.format(cal.time))
-                println("closing")
                 doAsync {
                     try {
                         eventsModelArrayList = getEvents(date_display.text!!.toString())

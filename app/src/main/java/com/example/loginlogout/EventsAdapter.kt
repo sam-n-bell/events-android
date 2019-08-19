@@ -64,10 +64,8 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
                 convertView.join_button.visibility = View.INVISIBLE
             }
             convertView.join_button.setOnClickListener({
-                println("event id is " + holder.event_id)
                 doAsync {
                     var response = joinEvent(holder.event_id)
-                    println("Join response " + response)
                     val handler = Handler(Looper.getMainLooper());
                     if (response.contains("ERROR")) {
                         handler.post({

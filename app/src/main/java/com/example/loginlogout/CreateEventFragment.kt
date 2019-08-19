@@ -76,7 +76,6 @@ class CreateEventFragment  : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
                 venue_id = venues[pos].getVenueIds()
-                println("venueid is " + venue_id)
                 doAsync {
 
                     val timeSlotsArrayList = getVenueAvailability()
@@ -108,7 +107,6 @@ class CreateEventFragment  : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
                 timeslot_value = timeslots[pos].getValues()
-                println("timeslot vlaue is " + timeslot_value)
             }
 
             override fun onNothingSelected(parent: AdapterView<out Adapter>?) {
@@ -198,7 +196,6 @@ class CreateEventFragment  : Fragment() {
             })
 
             view.num_players_edit_text.setOnKeyListener({ _, _, _ ->
-                println(num_players_edit_text.text!!.length)
                 if (num_players_edit_text.text!!.length > 0) {
                     num_players_text_input.error = null
                 }
@@ -238,7 +235,6 @@ class CreateEventFragment  : Fragment() {
                 "venue_id": ${venue_id}
             }
             """)
-//        return ""
     }
 
 
@@ -246,7 +242,6 @@ class CreateEventFragment  : Fragment() {
         val timeslotModelArrayList = ArrayList<TimeSlot_Model>()
 
         val url = """https://flaskappmysql.appspot.com/${venue_id}/availability?day=${event_day_text.text!!}""".trimIndent()
-        println("getting time slots " + url)
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
@@ -266,7 +261,6 @@ class CreateEventFragment  : Fragment() {
             }
             return timeslotModelArrayList
         } catch (e: Exception){
-            println("Failed"+e.toString())
             return timeslotModelArrayList
         }
         return timeslotModelArrayList
@@ -276,7 +270,6 @@ class CreateEventFragment  : Fragment() {
         val venueModelArrayList = ArrayList<Venue_Model>()
 
         val url = "https://flaskappmysql.appspot.com/venues"
-        println("url is " + url)
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
@@ -296,7 +289,6 @@ class CreateEventFragment  : Fragment() {
             }
             return venueModelArrayList
         } catch (e: Exception){
-            println("Failed"+e.toString())
             return venueModelArrayList
         }
     }
