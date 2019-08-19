@@ -49,14 +49,10 @@ class DayEventsFragment  : Fragment() {
                 eventsModelArrayList = getEvents(view.date_display.text!!.toString())
                 // Create a Custom Adapter that gives us a way to "view" each user in the ArrayList
                 eventsAdapter = EventsAdapter(view.context, eventsModelArrayList!!)
-                // set the custom adapter for the userlist viewing
                 val handler = Handler(Looper.getMainLooper());
                 handler.post({
                     try {
                         eventlist!!.adapter = eventsAdapter
-                        view.join_button.setOnClickListener({
-                            var id = view.join_button.id
-                        })
                     } catch (e: Exception){
                         // :D
                     }
