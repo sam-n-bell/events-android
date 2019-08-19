@@ -1,12 +1,16 @@
 package com.example.loginlogout
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
+import kotlinx.android.synthetic.main.event.view.*
+import org.jetbrains.anko.doAsync
 import org.w3c.dom.Text
 import java.util.ArrayList
 
@@ -38,6 +42,7 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
         var convertView = convertView
         val holder: ViewHolder
 
+
         if (convertView == null) {
             holder = ViewHolder()
             val inflater = context
@@ -48,9 +53,40 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
             holder.venue_name = convertView.findViewById(R.id.venue_name) as TextView
             holder.event_day = convertView.findViewById(R.id.event_day) as TextView
             holder.start_time = convertView.findViewById(R.id.start_time) as TextView
+            holder.event_id = EventsModelArrayList[position].getEventIds()
+            holder.created_by = EventsModelArrayList[position].getCreatedBys()
+            holder.error_text = convertView.findViewById(R.id.join_event_error_text) as TextView
 
 
             convertView.tag = holder
+
+            if (holder.created_by == Global.getUserId()) {
+                convertView.join_button.visibility = View.INVISIBLE
+            }
+            convertView.join_button.setOnClickListener({
+                println("event id is " + holder.event_id)
+                doAsync {
+                    var response = joinEvent(holder.event_id)
+                    println("Join response " + response)
+                    val handler = Handler(Looper.getMainLooper());
+                    if (response.contains("ERROR")) {
+                        handler.post({
+                            holder.error_text!!.text = "Problem joining"
+                        })
+                    } else if (response.contains("Already in game")) {
+                        handler.post({
+                            holder.error_text!!.text = "Already in event"
+                            convertView.join_button.visibility = View.INVISIBLE
+                        })
+                    } else if (response.contains("added")) {
+                        handler.post({
+                            holder.error_text!!.text = "Added to event"
+                            convertView.join_button.visibility = View.INVISIBLE
+                        })
+                    }
+                }
+
+            })
         } else {
             // the getTag returns the viewHolder object set as a tag to the view
             holder = convertView.tag as ViewHolder
@@ -60,9 +96,19 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
         holder.venue_name!!.text = "Venue Name: " + EventsModelArrayList[position].getVenueNames()
         holder.event_day!!.text = "Date: " + EventsModelArrayList[position].getEventDays()
         holder.start_time!!.text = "Time: " + EventsModelArrayList[position].getStartTimes()
-        holder.event_id = EventsModelArrayList[position].getEventIds()
+
 
         return convertView
+    }
+
+    private fun joinEvent(event_id: Int?): String {
+        return HttpUtilities.posturl(Global.getFlaskUrl() + "/events/${event_id}/join", """
+                        {
+                        "user_id": ${Global.getUserId()},
+                        "num_guests": 0,
+                        "participant_comment": "I'd like to play. Joined from mobile"
+                        }
+                    """)
     }
 
     private inner class ViewHolder {
@@ -72,6 +118,8 @@ class EventsAdapter(private val context: Context, private val EventsModelArrayLi
         var event_day: TextView? = null
         var start_time: TextView? = null
         var event_id: Int? = null
+        var created_by: Int? = null
+        var error_text: TextView? = null
     }
 
 }

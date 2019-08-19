@@ -49,9 +49,19 @@
                 android:paddingLeft="10dp"
                 android:text="" />
         <Button
-                android:text="JOIN"
+                android:text="Join Solo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/join_button"/>
+
+        <TextView
+                android:id="@+id/join_event_error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:paddingLeft="10dp"
+                android:text=""/>
     </LinearLayout>
 
 

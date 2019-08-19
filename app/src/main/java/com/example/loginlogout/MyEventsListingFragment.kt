@@ -13,6 +13,7 @@ import com.squareup.okhttp.Request
 import kotlinx.android.synthetic.main.my_events_listing_fragment.view.*
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
+import java.text.SimpleDateFormat
 import java.util.ArrayList
 
 class MyEventsListingFragment : Fragment() {
@@ -81,11 +82,14 @@ class MyEventsListingFragment : Fragment() {
             for (i in 0 until dataArray.length()) {
                 val eventModel = My_Event_Model()
                 val dataobj = dataArray.getJSONObject(i)
+                var sdf = SimpleDateFormat("H:mm:ss")
+                var timeObj = sdf.parse(dataobj.getString("start_time"))
+                val sdf_12hr = SimpleDateFormat("K:mm a").format(timeObj)
                 eventModel.setCreatedBys(dataobj.getInt("created_by"))
                 eventModel.setEventDays(dataobj.getString("event_day"))
                 eventModel.setEventIds(dataobj.getInt("event_id"))
                 eventModel.setNames(dataobj.getString("name"))
-                eventModel.setStartTimes(dataobj.getString("start_time"))
+                eventModel.setStartTimes(sdf_12hr.toString())
                 eventModel.setVenueNames(dataobj.getString("venue_name"))
                 eventModelArrayList.add(eventModel)
             }

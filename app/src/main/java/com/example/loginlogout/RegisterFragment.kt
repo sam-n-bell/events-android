@@ -13,6 +13,8 @@ import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import java.io.IOException
 import android.content.SharedPreferences
+import android.os.Handler
+import android.os.Looper
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.register_fragment.email_edit_text
 import kotlinx.android.synthetic.main.register_fragment.email_text_input
@@ -40,6 +42,8 @@ class RegisterFragment : Fragment() {
             var password = password_edit_text.text!!
             var password_confirm = password_confirm_edit_text.text!!
 
+            println("password as string is " + password.toString())
+
             if (email.length == 0 || email == null) {
                 email_text_input.error = "Please enter an email"
             }
@@ -49,19 +53,32 @@ class RegisterFragment : Fragment() {
             else if (password_confirm.length ==0 || password_confirm == null){
                 password_confirm_text_input.error = "Please confirm your password"
             }
-            else if (!(password_text_input == password_confirm_text_input)){
+            else if (!password.toString().equals(password_confirm.toString())) {
+                println("onClickListener comparing " + password + " to " + password_confirm)
                 password_confirm_text_input.error = "Passwords must match"
             }
             else if (name.length ==0 || name == null) {
                 name_text_input.error = "Please enter a name"
             }
             else {
-//                Thread.sleep(10000)
                 doAsync {
                     println("calling register")
                     var response = register(email, password, password_confirm, name)
                     println("got data back" + response)
-                    (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
+                    if (response.contains("registered")) {
+                        (activity as NavigationHost).navigateTo(LoginFragment(), false) //no back  button functionality
+                    } else if (response.contains("Email already in use")) {
+                        println("else if from register fragment")
+                        val handler = Handler(Looper.getMainLooper());
+                        handler.post({
+                            register_error_text.text = "That email is already on file"
+                        })
+                    } else {
+                        val handler = Handler(Looper.getMainLooper());
+                        handler.post({
+                            register_error_text.text = "Unable to sign up with this information"
+                        })
+                    }
                     try {
 //                        val gson = GsonBuilder().create()
 //                        val token = gson.fromJson(response, auth::class.java)
@@ -98,8 +115,9 @@ class RegisterFragment : Fragment() {
         })
 
         view.password_confirm_edit_text.setOnKeyListener({ _, _, _ ->
-            if (!(password_text_input == password_confirm_text_input)) {
-                password_confirm_text_input.error = "Please match your passwords"
+            println("onKeyListener comparing " + view.password_confirm_edit_text.text!! + " to " + view.password_edit_text.text!!)
+            if ((view.password_confirm_edit_text.text!!.toString().equals(view.password_edit_text.text!!.toString()))) {
+                password_confirm_text_input.error = null
             }
             false
         })

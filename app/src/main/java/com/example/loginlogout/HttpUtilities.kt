@@ -10,12 +10,14 @@ object HttpUtilities {
 
 
     fun posturl(url: String, body: String): String {
+        println("post url is " + url)
         val json = body.trimIndent()
         val requestbody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json)
         val client = OkHttpClient()
         val request = Request.Builder()
             .url(url)
             .post(requestbody)
+            .header("Authorization", "Bearer " + Global.getToken())
             .build()
         try {
             val response = client.newCall(request).execute()
